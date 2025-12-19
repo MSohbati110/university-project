@@ -1,8 +1,23 @@
 from django.db import models
 
 class ScrapeJob(models.Model):
+  SOURCE_TYPE_CHOICES = (
+    ("web", "Web Page"),
+    ("api", "API"),
+  )
+
   url = models.URLField(unique=True)
+  source_type = models.CharField(
+    max_length=10,
+    choices=SOURCE_TYPE_CHOICES,
+    default="web",
+  )
   html_content = models.JSONField(blank=True, null=True)
+
+  auto_scrape = models.BooleanField(default=False)
+  scrape_interval = models.PositiveIntegerField(default=60)  # seconds
+  last_scraped_at = models.DateTimeField(null=True, blank=True)
+
   created_at = models.DateTimeField(auto_now_add=True)
 
   def __str__(self):

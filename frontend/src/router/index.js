@@ -1,14 +1,26 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import ScraperView from '@/views/ScraperView'
+import HomeView from '@/views/HomeView'
+import DashboardView from '@/views/DashboardView'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'ScraperView',
+    name: 'Home',
+    component: HomeView
+  },
+  {
+    path: '/scraper',
+    name: 'Scraper',
     component: ScraperView
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: DashboardView
   },
 ]
 

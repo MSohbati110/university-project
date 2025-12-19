@@ -2,22 +2,21 @@
   <v-container>
     <v-row justify="center">
       <!-- Scraper Form -->
-      <scraper-form @scrape-completed="updateResults"></scraper-form>
-  
-      <!-- Results Component -->
-      <scrape-results :reloadFlag="reloadFlag"></scrape-results>
+      <scraper-form @scrape-completed="updateJobs"></scraper-form>
+
+      <ScrapeJobsDashboard :reloadFlag="reloadFlag"></ScrapeJobsDashboard>
     </v-row>
   </v-container>
 </template>
 
 <script>
 import ScraperForm from '@/components/ScraperForm.vue'
-import ScrapeResults from '@/components/ScrapeResults.vue'
+import ScrapeJobsDashboard from '@/components/ScrapeJobsDashboard.vue'
 
 export default {
   components: {
     ScraperForm,
-    ScrapeResults
+    ScrapeJobsDashboard
   },
   data() {
     return {
@@ -25,7 +24,7 @@ export default {
     }
   },
   methods: {
-    updateResults() {
+    updateJobs() {
       this.reloadFlag = Date.now();
     }
   }

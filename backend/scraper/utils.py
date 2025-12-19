@@ -7,13 +7,13 @@ headers = {
                 "Chrome/120.0.0.0 Safari/537.36"
 }
 
-def scrape_url(url):
+def scrape_web(url):
   response = requests.get(url, headers=headers ,timeout=10)
   response.raise_for_status()
 
   return response.text
 
-def scrape_selector_from_url(job, selectors):
+def scrape_selector_from_web(job, selectors):
   if not job.html_content:
     return []
 
@@ -30,3 +30,15 @@ def scrape_selector_from_url(job, selectors):
     })
 
   return results
+
+def scrape_api(url ,timeout=10):
+  response = requests.request(
+    method='GET',
+    url=url,
+    timeout=timeout,
+  )
+  response.raise_for_status()
+
+  data = response.json()
+  
+  return data

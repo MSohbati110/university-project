@@ -1,19 +1,22 @@
 <template>
   <v-app>
   <!-- <v-app style="background-color: var(--bg-color);"> -->
-    <!-- <Navbar v-if="!$route.meta.hideNavbar"></Navbar> -->
+    <!-- v-if="!$route.meta.hideNavbar" -->
+    <Navbar></Navbar>
 
-    <router-view/>
+    <v-main>
+      <router-view/>
+    </v-main>
   </v-app>
 </template>
 
 <script>
-// import Navbar from '@/components/core/Navbar.vue';
+import Navbar from '@/components/Navbar.vue';
 
 export default {
   name: 'App',
   components: {
-    // Navbar,
+    Navbar,
   },
   data() {
     return {

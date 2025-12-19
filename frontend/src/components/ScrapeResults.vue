@@ -61,7 +61,6 @@
 import api from "@/api";
 
 export default {
-  props: ["reloadFlag"],
   data() {
     return {
       selectedUrl: null,
@@ -78,7 +77,7 @@ export default {
   methods: {
     async getJobList() {
       try {
-        const response = await api.scrapeJobs();
+        const response = await api.scrapeSelectors();
         this.jobList = response.data;
       } catch (err) {
         console.error("Error fetching job list:", err);
@@ -129,14 +128,6 @@ export default {
       
       return []
     },
-  },
-  watch: {
-    reloadFlag: {
-      handler() {
-        this.getJobList();
-      },
-      deep: true
-    }
   },
 }
 </script>

@@ -18,16 +18,29 @@ export default {
       data: config
     })
   },
-  scrapeJobs() {
+  scrapeSelectors() {
     return axios({
       method: 'get',
-      url: `${base_url}/api/scrape/jobs/`,
+      url: `${base_url}/api/scrape/selectors/`,
     })
   },
   filteredResults(config) {
     return axios({
       method: 'post',
       url: `${base_url}/api/scrape/results/`,
+      data: config
+    })
+  },
+  scrapeJobs() {
+    return axios({
+      method: 'get',
+      url: `${base_url}/api/scrape/jobs/`,
+    })
+  },
+  toggleAutoScrape(config) {
+    return axios({
+      method: 'post',
+      url: `${base_url}/api/scrape/jobs/toggle/`,
       data: config
     })
   },

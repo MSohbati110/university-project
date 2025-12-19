@@ -77,33 +77,6 @@
         </v-form>
       </v-card-text>
     </v-card>
-
-    <!-- Results -->
-    <!-- <v-row class="mt-6" v-if="results.length">
-      <v-col cols="12" v-for="job in results" :key="job.id">
-        <v-card outlined class="pa-4 mb-4">
-          <v-card-title class="text-subtitle-1">
-            {{ job.url }}
-          </v-card-title>
-          <v-card-text>
-            <v-simple-table dense>
-              <thead>
-                <tr>
-                  <th>Element</th>
-                  <th>Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="item in job.results" :key="item.element_name">
-                  <td>{{ item.element_name }}</td>
-                  <td>{{ item.element_value }}</td>
-                </tr>
-              </tbody>
-            </v-simple-table>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row> -->
   </v-container>
 </template>
 
@@ -115,7 +88,6 @@ export default {
     return {
       urlsText: "",
       selectorsText: "",
-      // results: [],
       loading: false,
       error: "",
       successAlert: false,
@@ -124,7 +96,6 @@ export default {
   methods: {
     async submitScrape() {
       this.error = "";
-      // this.results = [];
       this.loading = true;
       this.successAlert = false;
 
@@ -143,8 +114,11 @@ export default {
           return;
         }
 
+        if (selectors[0] == '') {
+          selectors = ['div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+        }        
+
         const response = await api.scrape({urls, selectors});
-        // this.results = response.data;
 
         this.$emit('scrape-completed')
 
