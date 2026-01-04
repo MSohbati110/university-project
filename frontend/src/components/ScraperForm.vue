@@ -1,15 +1,22 @@
 <template>
   <v-container class="py-8" style="width:650px; margin:0">
     <v-card elevation="5" class="pa-6" width="600px">
-      <v-card-title class="text-h5">Web Scraper</v-card-title>
+      <!-- Tabs -->
+      <v-tabs v-model="activeTab" background-color="primary" dark>
+        <v-tab value="web">Web Scraper</v-tab>
+        <v-tab value="api">API Scraper</v-tab>
+      </v-tabs>
+
+      <!-- <v-card-title class="text-h5">Web Scraper</v-card-title> -->
       <v-card-text>
         <v-form @submit.prevent="submitScrape">
-          <v-row>
+          <!-- ================= WEB SCRAPER ================= -->
+          <v-row v-if="activeTab == 0">
             <!-- URLs Input -->
             <v-col cols="12">
               <v-textarea
                 v-model="urlsText"
-                label="URLs (one per line)"
+                label="Web URLs (one per line)"
                 placeholder="https://example.com/product1"
                 rows="5"
                 outlined
@@ -30,6 +37,21 @@
             </v-col>
           </v-row>
 
+          <!-- ================= API SCRAPER ================= -->
+          <v-row v-if="activeTab == 1">
+            <v-col cols="12">
+              <v-textarea
+                v-model="apiUrl"
+                label="API URLs (one per line)"
+                placeholder="https://api.publicapis.org/entries"
+                rows="5"
+                outlined
+                required
+              ></v-textarea>
+            </v-col>
+          </v-row>
+
+          <!-- ================= ACTION ROW ================= -->
           <!-- Submit Button -->
           <v-row justify="space-between" align="center">
             <v-col>
@@ -91,6 +113,8 @@ export default {
       loading: false,
       error: "",
       successAlert: false,
+      activeTab: 0,
+      apiUrl: "",
     };
   },
   methods: {
@@ -100,25 +124,36 @@ export default {
       this.successAlert = false;
 
       try {
-        const urls = this.urlsText
-          .split("\n")
-          .map((u) => u.trim())
-          .filter((u) => u);
-
-        let selectors;
-        try {
-          selectors = this.selectorsText.split("\n");
-        } catch (e) {
-          this.error = "Selectors must be valid";
-          this.loading = false;
-          return;
+        let urls, source_type, selectors;
+        if (this.activeTab == 0) {
+          source_type = 'web'
+          urls = this.urlsText
+            .split("\n")
+            .map((u) => u.trim())
+            .filter((u) => u);
+  
+          selectors;
+          try {
+            selectors = this.selectorsText.split("\n");
+          } catch (e) {
+            this.error = "Selectors must be valid";
+            this.loading = false;
+            return;
+          }
+  
+          if (selectors[0] == '') {
+            selectors = ['div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+          }        
         }
-
-        if (selectors[0] == '') {
-          selectors = ['div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
-        }        
-
-        const response = await api.scrape({urls, selectors});
+        else {
+          source_type = 'api'
+          urls = this.apiUrl
+            .split("\n")
+            .map((u) => u.trim())
+            .filter((u) => u);
+        }
+        
+        const response = await api.scrape({urls, selectors, source_type});
 
         this.$emit('scrape-completed')
 
