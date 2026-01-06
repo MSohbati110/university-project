@@ -6,7 +6,7 @@ class ScrapedDataSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = ScrapedData
-    fields = ['url', 'element_name', 'element_value']
+    fields = ['url', 'element_name', 'element_value', 'cleaned_value', 'cleaned_value_tokens', 'metadata']
 
 
 class ScrapeJobSerializer(serializers.ModelSerializer):

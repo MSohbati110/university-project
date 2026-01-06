@@ -13,6 +13,7 @@ class ScrapeJob(models.Model):
     default="web",
   )
   html_content = models.JSONField(blank=True, null=True)
+  cleaned_content = models.JSONField(blank=True, null=True)
 
   auto_scrape = models.BooleanField(default=False)
   scrape_interval = models.PositiveIntegerField(default=60)  # seconds
@@ -28,6 +29,10 @@ class ScrapedData(models.Model):
   job = models.ForeignKey(ScrapeJob, on_delete=models.CASCADE, related_name="results")
   element_name = models.CharField(max_length=255)
   element_value = models.TextField()
+
+  cleaned_value = models.TextField(null=True, blank=True)
+  cleaned_value_tokens = models.JSONField(null=True, blank=True)
+  metadata = models.JSONField(null=True, blank=True)
 
   class Meta:
     unique_together = ("job", "element_name")  # prevents duplicate scraping for same element

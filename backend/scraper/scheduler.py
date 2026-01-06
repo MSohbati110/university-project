@@ -29,6 +29,9 @@ def auto_scrape_job(job_url):
         element_name=item["element_name"]
       )
       data.element_value = item["element_value"]
+      data.cleaned_value = item["cleaned_value"]["normalized"],
+      data.cleaned_value_tokens = item["cleaned_value"]["tokens"],
+      data.metadata = item["cleaned_value"]["patterns"],
       data.save()
   if source_type == 'api':
     job.html_content = scrape_api(job_url)

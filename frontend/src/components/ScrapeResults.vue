@@ -50,16 +50,45 @@
         </v-card>
       </v-col>
     </v-row>
+
     <v-card elevation="5" class="pa-6 mt-2">
+      <v-tabs v-model="activeTab" background-color="primary" dark>
+        <v-tab value="raw">Raw Data</v-tab>
+        <v-tab value="clean">Cleaned Text</v-tab>
+        <v-tab value="token">Cleaned Text Tokens</v-tab>
+        <v-tab value="pattern">MetaData</v-tab>
+      </v-tabs>
+
       <!-- Results Table -->
       <v-simple-table v-if="isResults">
         <thead>
           <tr>
-            <th  v-for="item in headers" :key="item.id">{{ item.name }}</th>
+            <th v-for="item in headers" :key="item.id">{{ item.name }}</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-if="activeTab == 0">
           <tr v-for="row in results" :key="row.id">
+            <td v-for="item in headers" :key="item.id">
+              {{ row[item.name] }}
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-if="activeTab == 1">
+          <tr v-for="row in cleanedResults" :key="row.id">
+            <td v-for="item in headers" :key="item.id">
+              {{ row[item.name] }}
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-if="activeTab == 2">
+          <tr v-for="row in cleanedResultsTokens" :key="row.id">
+            <td v-for="item in headers" :key="item.id">
+              {{ row[item.name] }}
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-if="activeTab == 3">
+          <tr v-for="row in metadataResults" :key="row.id">
             <td v-for="item in headers" :key="item.id">
               {{ row[item.name] }}
             </td>
@@ -87,6 +116,7 @@ export default {
       results: {},
       headers: {},
       isResults: false,
+      activeTab: 0,
     }
   },
   mounted() {
@@ -112,15 +142,24 @@ export default {
         let tmp = {}
         let tmplist = {};
         this.results = [];
+        this.cleanedResults = [{id: 0}];
+        this.cleanedResultsTokens = [];
+        this.metadataResults= [{id: 0}];
         this.headers = [];
         let counter = 0;
+        let tokenCounter = 0;
         let number = 0;
 
         if (this.sourceType == 'web') {
           for (let data of response.data) {
             tmplist[data.element_name] = data.element_value.split(', ');
             this.headers.push({name: data.element_name, id: number});
+
+            this.cleanedResults[0][data.element_name] = data.cleaned_value;
+            this.metadataResults[0][data.element_name] = data.metadata;
+
             counter = Math.max(counter, tmplist[data.element_name].length);
+            tokenCounter = Math.max(tokenCounter, data.cleaned_value_tokens.length);
             number++;
           }
   
@@ -130,6 +169,14 @@ export default {
               tmp[item] = tmplist[item][i];       
             }
             this.results.push(tmp);
+          }
+
+          for (let i=0 ; i<tokenCounter ; i++) {
+            tmp = {id: i};
+            for (let data of response.data) {
+              tmp[data.element_name] = data.cleaned_value_tokens[i];       
+            }
+            this.cleanedResultsTokens.push(tmp);
           }
         }
         if (this.sourceType == 'api') {
@@ -146,20 +193,12 @@ export default {
               counter++;
             })
           }
-          // for (let data of response.data) {
-          //   tmp = {id: counter};
-          //   for (let item of Object.keys(this.headers)) {
-          //     tmp[item] = data[counter][item]
-          //   }
-          //   counter++;
-          // }
+
           this.results = response.data.map((item, index) => ({
             ...item,
             id: index
           }));
         }
-        console.log(this.headers);
-        console.log(this.results);
 
         this.isResults = true;
       } catch (err) {

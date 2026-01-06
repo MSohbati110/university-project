@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from .data_cleaning import clean_scraped_value
 
 headers = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -24,9 +25,11 @@ def scrape_selector_from_web(job, selectors):
     # support CSS selectors
     elements = soup.select(selector)
     value = ", ".join([el.get_text(strip=True) for el in elements])
+    cleaned = clean_scraped_value(value)
     results.append({
       "element_name": selector,
-      "element_value": value
+      "element_value": value,
+      "cleaned_value": cleaned,
     })
 
   return results

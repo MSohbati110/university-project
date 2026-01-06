@@ -35,7 +35,10 @@ class ScrapeAPIView(APIView):
           ScrapedData.objects.get_or_create(
             job=job,
             element_name=item["element_name"],
-            defaults={"element_value": item["element_value"]}
+            element_value=item["element_value"],
+            cleaned_value=item["cleaned_value"]["normalized"],
+            cleaned_value_tokens=item["cleaned_value"]["tokens"],
+            metadata=item["cleaned_value"]["patterns"],
           )
       if source_type == 'api':
         if not job.html_content:
