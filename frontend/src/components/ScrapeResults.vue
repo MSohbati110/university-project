@@ -39,8 +39,16 @@
     
           <v-row justify="end">
             <v-btn
+              :disabled="!rawResponse"
               color="primary"
-              class="mb-4"
+              @click="exportResults"
+            >
+              Export JSON
+            </v-btn>
+
+            <v-btn
+              color="primary"
+              class="ml-4"
               :disabled="!selectedUrl || (selectedSelectors.length === 0 && sourceType == 'web')"
               @click="fetchFilteredResults"
             >
@@ -117,6 +125,7 @@ export default {
       headers: {},
       isResults: false,
       activeTab: 0,
+      rawResponse: null,
     }
   },
   mounted() {
@@ -138,8 +147,9 @@ export default {
           selectors: this.selectedSelectors,
           source_type: this.sourceType
         });
+        this.rawResponse = response.data;
 
-        let tmp = {}
+        let tmp = {};
         let tmplist = {};
         this.results = [];
         this.cleanedResults = [{id: 0}];
@@ -205,6 +215,19 @@ export default {
         this.isResults = false;
         console.error("Error fetching filtered results:", err);
       }
+    },
+    exportResults() {
+      const dataStr = JSON.stringify(this.rawResponse, null, 2); // pretty format
+      const blob = new Blob([dataStr], { type: "application/json" });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "results.json";
+      link.click();
+
+      window.URL.revokeObjectURL(url);
     }
   },
   computed: {

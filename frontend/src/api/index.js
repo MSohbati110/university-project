@@ -1,6 +1,6 @@
 const ISDEVELOPMODE = process.env.NODE_ENV !== 'production'
 
-const django_api_url = 'http://localhost:8000'
+const django_api_url = 'http://localhost:8002'
 
 export const base_url = ISDEVELOPMODE ? django_api_url : ''
 
